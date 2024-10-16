@@ -15,6 +15,7 @@ import jakarta.validation.Valid;
 
 @Controller
 public class AuthController {
+
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
 
@@ -37,8 +38,8 @@ public class AuthController {
         if(result.hasErrors()){
             return "register";
         }
-        if (userService.userExistsByEmail(user.getEmail()) || userService.userExistsByUsername(user.getUsername())) {
-            model.addAttribute("error", "Email or Username already exists!");
+        if (userService.userExistsByEmail(user.getEmail())) {
+            model.addAttribute("error", "Email already exists!");
             return "register";
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -51,5 +52,4 @@ public class AuthController {
     public String getLogin() {
         return "login";
     }
-
 }

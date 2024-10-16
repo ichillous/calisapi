@@ -20,9 +20,6 @@ public class SecurityConfig {
     @Autowired
     private CustomUserDetailsService userDetailsService;
 
-    @Autowired
-    private UserService userService;
-
     @Bean
     public static PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -31,30 +28,16 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .authorizeHttpRequests(authorizeRequests ->
-                        authorizeRequests
-                                .requestMatchers("/", "/home", "/static/**", "/images/**", "/css/**", "/js/**", "/register", "/login").permitAll()
-                                .requestMatchers("/dashboard", "/logs", "/challenges").hasRole("USER")
-                                .anyRequest().authenticated()
+                .authorizeHttpRequests(authorizeRequests -> authorizeRequests
+                        .requestMatchers("/", "/home", "/register", "/login").permitAll()
+                        .requestMatchers("/dashboard", "/logs", "/challenges").hasRole("USER")
+                        .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
                         .permitAll()
-                        .successHandler((request, response, authentication) -> {
-                            authentication.getAuthorities().forEach(grantedAuthority -> {
-                                String role = grantedAuthority.getAuthority();
-
-                                try {
-                                    if (role.equals("ROLE_ADMIN")) {
-                                        response.sendRedirect("/dashboard");
-                                    } else if (role.equals("ROLE_USER")) {
-                                        response.sendRedirect("/dashboard");
-                                    }
-                                } catch (Exception e) {
-                                    e.addSuppressed(e);
-                                }
-                            });
-                        })
+                        .defaultSuccessUrl("/dashboard", true)
+                        .failureUrl("/login?error=true")
                 )
                 .logout(logout -> logout
                         .logoutSuccessUrl("/login?logout")
@@ -64,11 +47,10 @@ public class SecurityConfig {
 
         return http.build();
     }
-
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userService.userDetailsService());
+        authProvider.setUserDetailsService(userDetailsService);
         authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
     }
@@ -78,4 +60,5 @@ public class SecurityConfig {
         builder.userDetailsService(userDetailsService)
                 .passwordEncoder(passwordEncoder());
     }
+
 }

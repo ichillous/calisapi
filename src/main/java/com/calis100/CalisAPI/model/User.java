@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.Date;
 import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -24,16 +25,12 @@ public class User {
     @Column(name = "user_id")
     private Long id;
 
-    @NotEmpty(message = "Email is required")
-    @Email(message = "Invalid email format")
     @Column(name = "email", unique = true, nullable = false)
     private String email;
 
-    @NotEmpty(message = "Password is required")
     @Column(name = "password_hash", nullable = false)
     private String passwordHash;
 
-    @NotEmpty(message = "Username is required")
     @Size(min = 3, max = 50, message = "Username must be between 3 and 50 characters")
     @Column(name = "username", unique = true, nullable = false)
     private String username;

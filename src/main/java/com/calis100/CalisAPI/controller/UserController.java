@@ -1,8 +1,9 @@
 package com.calis100.CalisAPI.controller;
 
 
-import com.calis100.CalisAPI.dto.UserDTO;
+
 import com.calis100.CalisAPI.model.User;
+import com.calis100.CalisAPI.model.enums.Role;
 import com.calis100.CalisAPI.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,46 +26,14 @@ public class UserController {
         this.userService = userService;
     }
 
-    // Display the registration form
-    @GetMapping("/register")
-    public String showRegistrationForm(Model model) {
-        model.addAttribute("user", model);
-        return "register"; // Returns the register.html template
-    }
-
-    // Handle user registration
-    @PostMapping("/register")
-    public String registerUser(@ModelAttribute("user") @Valid UserDTO userDTO,
-                               BindingResult result, Model model) {
-        // Validate if email or username already exists
-        if (userService.findByEmail(userDTO.getEmail()) != null) {
-            result.rejectValue("email", "error.user", "An account with this email already exists.");
-        }
-        if (userService.findByUsername(userDTO.getUsername()) != null) {
-            result.rejectValue("username", "error.user", "An account with this username already exists.");
-        }
-
-        if (result.hasErrors()) {
-            model.addAttribute("user", userDTO);
-            return "register";
-        }
-
-        // Map UserDTO to User entity
-        User user = convertToEntity(userDTO);
-
-        userService.saveUser(user);
-        return "redirect:/login?registerSuccess";
-    }
-
-    // Display the login page
-    @GetMapping("/login")
-    public String loginPage() {
-        return "login";
-    }
-
     // Display all users (Admin functionality)
     @GetMapping("/all")
-    public String getAllUsers(Model model) {
+    public String getAllUsers(Model model, Authentication authentication) {
+        String username = authentication.getName();
+        User currentUser = userService.findByUsername(username);
+        if (!currentUser.getRole().equals(Role.ADMIN)) {
+            return "redirect:/access-denied";
+        }
         List<User> users = userService.findAll();
         model.addAttribute("users", users);
         return "all-users"; // Returns the all-users.html template
@@ -79,52 +48,48 @@ public class UserController {
         return "profile";
     }
 
-    // Show edit form
+
     @GetMapping("/edit")
     public String showEditForm(Authentication authentication, Model model) {
         String username = authentication.getName();
         User user = userService.findByUsername(username);
-        model.addAttribute("userDTO", user);
+        model.addAttribute("user", user);
         return "edit-user";
     }
 
     // Handle profile update
     @PostMapping("/edit")
-    public String updateUser(@ModelAttribute("userDTO") @Valid UserDTO userDTO,
+    public String updateUser(@ModelAttribute("user") @Valid User user,
                              BindingResult result, Authentication authentication, RedirectAttributes redirectAttributes) {
+        String currentUsername = authentication.getName();
+        User currentUser = userService.findByUsername(currentUsername);
+
+
         if (result.hasErrors()) {
             return "edit-user";
         }
 
-        String currentUsername = authentication.getName();
-        User user = userService.findByUsername(currentUsername);
-
         // Update user details
-        user.setUsername(userDTO.getUsername());
-        user.setEmail(userDTO.getEmail());
+        currentUser.setUsername(user.getUsername());
+        currentUser.setEmail(user.getEmail());
+        // Handle password update if necessary
+        if (user.getPasswordHash() != null && !user.getPasswordHash().isEmpty()) {
+            currentUser.setPasswordHash(user.getPasswordHash()); // Ensure password is encoded in service
+        }
 
         userService.saveUser(user);
 
         redirectAttributes.addFlashAttribute("successMessage", "Profile updated successfully!");
         return "redirect:/users/profile";
     }
+
     // Delete the user account
     @PostMapping("/delete")
     public String deleteUser(Authentication authentication) {
         String username = authentication.getName();
         userService.deleteByUsername(username);
         // Invalidate the session or handle logout if necessary
-        return "redirect:/register?accountDeleted";
+        return "redirect:/auth/register?accountDeleted";
     }
 
-
-    // Helper method to convert UserDTO to User entity
-    private User convertToEntity(UserDTO userDTO) {
-        User user = new User();
-        user.setUsername(userDTO.getUsername());
-        user.setEmail(userDTO.getEmail());
-        user.setPasswordHash(userDTO.getPassword()); // Password encoding is handled in the service
-        // Set other fields as necessary
-        return user;
-    }
 }

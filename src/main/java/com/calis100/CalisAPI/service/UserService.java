@@ -1,6 +1,8 @@
 package com.calis100.CalisAPI.service;
 
+
 import com.calis100.CalisAPI.model.User;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;
 
@@ -28,4 +30,7 @@ public interface UserService {
     void deleteUser(Long id);
 
     void deleteByUsername(String username);
+
+    UserDetailsService userDetailsService();
+
 }

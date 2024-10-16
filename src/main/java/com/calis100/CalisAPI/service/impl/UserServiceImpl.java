@@ -1,12 +1,14 @@
 package com.calis100.CalisAPI.service.impl;
 
 
+
 import com.calis100.CalisAPI.model.User;
 import com.calis100.CalisAPI.model.enums.Role;
 import com.calis100.CalisAPI.repository.UserRepository;
 import com.calis100.CalisAPI.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,23 +18,26 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
-    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository,
-                           PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
+    }
+
+    @Override
+    public UserDetailsService userDetailsService() {
+        return username -> (UserDetails) userRepository.findByEmail(username)
+                .orElse(null);
     }
 
     @Override
     public User saveUser(User user) {
+        User newUser = new User();
         // Encode the password before saving
-        user.setPasswordHash(passwordEncoder.encode(user.getPasswordHash()));
-        // Set default role if not set
-        if (user.getRole() == null) {
-            user.setRole(Role.USER);
-        }
+        user.setUsername(newUser.getUsername());
+        user.setEmail(newUser.getEmail());
+        user.setRole(Role.USER);
+        user.setPasswordHash(newUser.getPasswordHash());
         return userRepository.save(user);
     }
 

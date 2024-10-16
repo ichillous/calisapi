@@ -1,10 +1,12 @@
 package com.calis100.CalisAPI.controller;
 
+
 import com.calis100.CalisAPI.model.User;
-import com.calis100.CalisAPI.model.enums.Role;
 import com.calis100.CalisAPI.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -12,44 +14,32 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
 @Controller
-@RequestMapping("/auth")
 public class AuthController {
     private final UserService userService;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public AuthController(UserService userService) {
+    public AuthController(UserService userService, PasswordEncoder passwordEncoder) {
         this.userService = userService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     // Registration page - GET
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
-        model.addAttribute("user", new User()); // Creating an empty User object for the form
-        return "register"; // Renders the registration page
+        model.addAttribute("user", new User());
+        return "register";
     }
 
     // Registration - POST
     @PostMapping("/register")
-    public String registerUser(@Valid @ModelAttribute("user") User user, BindingResult result, Model model) {
-        // Validate if email or username already exists
-        if (userService.userExistsByEmail(user.getEmail())) {
-            result.rejectValue("email", "error.user", "An account with this email already exists.");
+    public String registerUser(@Valid @ModelAttribute("user") User user, BindingResult result) {
+        if(result.hasErrors()){
+            return "register";
         }
-        if (userService.userExistsByUsername(user.getUsername())) {
-            result.rejectValue("username", "error.user", "An account with this username already exists.");
-        }
-
-        // Return to registration form if there are validation errors
-        if (result.hasErrors()) {
-            return "register"; // Re-render registration form with errors
-        }
-
-        // Set default role as USER and save the user
-        user.setRole(Role.USER);
+        user.setPasswordHash(passwordEncoder.encode(user.getPasswordHash()));
         userService.saveUser(user);
-
-        // Redirect to login with success message
-        return "redirect:/auth/login?registerSuccess";
+        return "redirect:/login";
     }
 
     // Login page - GET
@@ -67,30 +57,15 @@ public class AuthController {
         if (registerSuccess != null) {
             model.addAttribute("successMsg", "Registration successful! Please log in.");
         }
-        return "login"; // Renders the login page
+        return "login";
     }
 
-    // Dashboard redirection after login - GET
-    @GetMapping("/dashboard")
-    public String showDashboard(Authentication authentication, Model model) {
-        String username = authentication.getName();
-        User user = userService.findByUsername(username);
-        model.addAttribute("user", user); // Add user details to the model for the dashboard view
-        return "dashboard"; // Renders the dashboard page
-    }
-
-    // Handle custom login page - GET (avoiding mapping conflict with above method)
-    @GetMapping("/custom-login")
-    public String customLoginPage() {
-        return "login"; // Custom login endpoint if you want additional login logic or page variants
-    }
-
+    // Handle login - POST (Optional: If authentication is handled by Spring Security, this may not be needed)
     @PostMapping("/login")
-    public String loginUser(@Valid @ModelAttribute("user") User user, BindingResult result, Model model) {
-        if (result.hasErrors()) {
-            return "login";
-        }
+    public String login(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Object principal = authentication.getPrincipal();
+        model.addAttribute("user", principal);
         return "redirect:/dashboard";
-        // TODO
     }
 }

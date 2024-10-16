@@ -73,8 +73,8 @@ public class UserController {
         currentUser.setUsername(user.getUsername());
         currentUser.setEmail(user.getEmail());
         // Handle password update if necessary
-        if (user.getPasswordHash() != null && !user.getPasswordHash().isEmpty()) {
-            currentUser.setPasswordHash(user.getPasswordHash()); // Ensure password is encoded in service
+        if (user.getPassword() != null && !user.getPassword().isEmpty()) {
+            currentUser.setPassword(user.getPassword()); // Ensure password is encoded in service
         }
 
         userService.saveUser(user);

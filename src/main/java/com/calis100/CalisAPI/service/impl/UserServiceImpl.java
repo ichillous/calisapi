@@ -32,12 +32,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User saveUser(User user) {
-        User newUser = new User();
-        // Encode the password before saving
-        user.setUsername(newUser.getUsername());
-        user.setEmail(newUser.getEmail());
         user.setRole(Role.USER);
-        user.setPasswordHash(newUser.getPasswordHash());
         return userRepository.save(user);
     }
 

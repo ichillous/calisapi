@@ -33,39 +33,23 @@ public class AuthController {
 
     // Registration - POST
     @PostMapping("/register")
-    public String registerUser(@Valid @ModelAttribute("user") User user, BindingResult result) {
+    public String registerUser(@Valid @ModelAttribute("user") User user, BindingResult result, Model model) {
         if(result.hasErrors()){
             return "register";
         }
-        user.setPasswordHash(passwordEncoder.encode(user.getPasswordHash()));
+        if (userService.userExistsByEmail(user.getEmail()) || userService.userExistsByUsername(user.getUsername())) {
+            model.addAttribute("error", "Email or Username already exists!");
+            return "register";
+        }
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userService.saveUser(user);
         return "redirect:/login";
     }
 
     // Login page - GET
     @GetMapping("/login")
-    public String showLoginForm(@RequestParam(value = "error", required = false) String error,
-                                @RequestParam(value = "logout", required = false) String logout,
-                                @RequestParam(value = "registerSuccess", required = false) String registerSuccess,
-                                Model model) {
-        if (error != null) {
-            model.addAttribute("errorMsg", "Invalid username or password.");
-        }
-        if (logout != null) {
-            model.addAttribute("logoutMsg", "You have been logged out.");
-        }
-        if (registerSuccess != null) {
-            model.addAttribute("successMsg", "Registration successful! Please log in.");
-        }
+    public String getLogin() {
         return "login";
     }
 
-    // Handle login - POST (Optional: If authentication is handled by Spring Security, this may not be needed)
-    @PostMapping("/login")
-    public String login(Model model) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Object principal = authentication.getPrincipal();
-        model.addAttribute("user", principal);
-        return "redirect:/dashboard";
-    }
 }

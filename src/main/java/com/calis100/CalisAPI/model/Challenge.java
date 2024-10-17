@@ -30,6 +30,10 @@ public class Challenge {
     @Column(name = "current_day")
     private int currentDay;
 
+    @Column(name = "created_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdAt = new Date();
+
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private Status status;

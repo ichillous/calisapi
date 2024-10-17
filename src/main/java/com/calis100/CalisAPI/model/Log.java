@@ -43,4 +43,8 @@ public class Log {
 
     @Column(name = "run_miles")
     private int runMiles;
+
+    @Column(name = "date")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date date = new Date();
 }

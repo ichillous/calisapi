@@ -1,11 +1,11 @@
 package com.calis100.CalisAPI.service;
 
-import com.calis100.CalisAPI.model.Challenge;
 import com.calis100.CalisAPI.model.Log;
+import com.calis100.CalisAPI.model.User;
 
 import java.util.List;
 
 public interface LogService {
-    Log saveLog(Log log);
-    List<Log> getLogsByChallenge(Challenge challenge);
+    void saveLog(Log log);
+    List<Log> getLogsByUser(User user);
 }

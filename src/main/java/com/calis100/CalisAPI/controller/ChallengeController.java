@@ -1,13 +1,11 @@
 package com.calis100.CalisAPI.controller;
 
 import com.calis100.CalisAPI.model.Challenge;
-import com.calis100.CalisAPI.model.User;
+import com.calis100.CalisAPI.model.Log;
 import com.calis100.CalisAPI.model.enums.Status;
 import com.calis100.CalisAPI.service.ChallengeService;
-import com.calis100.CalisAPI.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -42,8 +40,12 @@ public class ChallengeController {
             model.addAttribute("message", "You have already accepted a challenge");
             return "dashboard";
         }
-        if (challenge.getStatus() == Status.None) {
 
+        if (challenge.getStatus() == Status.None) {
+            Log log = new Log();
+            log.setChallenge(challenge);
+            model.addAttribute("log", log);
+            return "/log-form";
         }
         challenge.setStatus(Status.Active);
         challengeService.saveChallenge(challenge);

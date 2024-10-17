@@ -26,24 +26,21 @@ public class ChallengeServiceImpl implements ChallengeService {
     */
 
     @Override
-    public Challenge saveChallenge(Challenge challenge) {
-        return challengeRepository.save(challenge);
+    public Challenge getActiveChallenge(User user) {
+        return challengeRepository.findByUserAndStatus(user, Status.Active);
     }
 
     @Override
-    public Challenge getChallenge(Challenge challenge) {
-        // can return entire challenge or challenge values
-        return challengeRepository.findChallengeByChallengeId(challenge);
+    public void saveChallenge(Challenge challenge) {
+        challengeRepository.save(challenge);
     }
 
     @Override
-    public List<Challenge> getAllChallenges(User user) {
-        return challengeRepository.findByUser(user);
-    }
-
-    @Override
-    public void updateChallengeStatus(Challenge challenge, Status status) {
-        challenge.setStatus(status);
+    public void updateChallengeProgress(Challenge challenge) {
+        challenge.setCurrentDay(challenge.getCurrentDay() + 1);
+        if (challenge.getCurrentDay() > 100) {
+            challenge.setStatus(Status.Completed);
+        }
         challengeRepository.save(challenge);
     }
 

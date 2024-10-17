@@ -37,29 +37,48 @@ public class LogController {
         this.userService = userService;
     }
 
-    /* TODO: Display Log Page*/
     @GetMapping("/new")
-    public String showLogForm(Model model) {
+    public String showLogForm(Model model, Authentication authentication) {
+        String username = authentication.getName();
+        User user = userService.findByUsername(username);
+        Challenge activeChallenge = challengeService.getActiveChallenge(user);
+
+        if (activeChallenge == null) {
+            return "redirect:/dashboard?error=noActiveChallenge";
+        }
+
         model.addAttribute("log", new Log());
+        model.addAttribute("challenge", activeChallenge);
         return "log-form";
     }
 
-    /* TODO: Display all logs*/
     @GetMapping
-    public String getLogs() {
+    public String getLogs(Model model, Authentication authentication) {
+        String username = authentication.getName();
+        User user = userService.findByUsername(username);
+        List<Log> logs = logService.getLogsByUser(user);
+        model.addAttribute("logs", logs);
         return "all-logs";
     }
 
-    @PostMapping("/log-form")
-    public String submitLog(@Valid @ModelAttribute("log") Log log, BindingResult result, Model model) {
-        Challenge challenge = log.getChallenge();
-        Challenge activeChallenge = challengeService.getChallenge(challenge);
+    @PostMapping("/submit")
+    public String submitLog(@Valid @ModelAttribute("log") Log log, BindingResult result, Authentication authentication) {
+        if (result.hasErrors()) {
+            return "log-form";
+        }
+
+        String username = authentication.getName();
+        User user = userService.findByUsername(username);
+        Challenge activeChallenge = challengeService.getActiveChallenge(user);
 
         if (activeChallenge == null) {
-            model.addAttribute("error", "Challenge not found");
-            return "redirect:/dashboard";
+            return "redirect:/dashboard?error=noActiveChallenge";
         }
+
+        log.setChallenge(activeChallenge);
         logService.saveLog(log);
-        return "redirect:/dashboard";
+        challengeService.updateChallengeProgress(activeChallenge);
+
+        return "redirect:/dashboard?success=logSubmitted";
     }
 }

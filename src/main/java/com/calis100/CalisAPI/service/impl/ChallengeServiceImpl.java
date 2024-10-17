@@ -19,21 +19,25 @@ public class ChallengeServiceImpl implements ChallengeService {
         this.challengeRepository = challengeRepository;
     }
 
+    /*
+        TODO:
+            Thoughts
+                - We need to create and update challenges.
+    */
+
     @Override
     public Challenge saveChallenge(Challenge challenge) {
         return challengeRepository.save(challenge);
     }
 
     @Override
-    public Challenge getActiveChallenge(User user) {
-        return challengeRepository.findByUserAndStatus(user, Status.ACTIVE)
-                .stream()
-                .findFirst()
-                .orElse(null);
+    public Challenge getChallenge(Challenge challenge) {
+        // can return entire challenge or challenge values
+        return challengeRepository.findChallengeByChallengeId(challenge);
     }
 
     @Override
-    public List<Challenge> getChallengesByUser(User user) {
+    public List<Challenge> getAllChallenges(User user) {
         return challengeRepository.findByUser(user);
     }
 
@@ -42,5 +46,6 @@ public class ChallengeServiceImpl implements ChallengeService {
         challenge.setStatus(status);
         challengeRepository.save(challenge);
     }
+
 }
 

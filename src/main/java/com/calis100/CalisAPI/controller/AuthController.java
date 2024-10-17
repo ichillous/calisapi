@@ -4,8 +4,6 @@ package com.calis100.CalisAPI.controller;
 import com.calis100.CalisAPI.model.User;
 import com.calis100.CalisAPI.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

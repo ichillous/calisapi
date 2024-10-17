@@ -1,6 +1,9 @@
 package com.calis100.CalisAPI.model.enums;
 
+import lombok.ToString;
+
+@ToString
 public enum Status {
-    ACTIVE, COMPLETED, FAILED
+    None, Active, Completed, Failed;
 }
 

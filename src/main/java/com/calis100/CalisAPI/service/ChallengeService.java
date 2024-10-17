@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface ChallengeService {
     Challenge saveChallenge(Challenge challenge);
-    Challenge getActiveChallenge(User user);
-    List<Challenge> getChallengesByUser(User user);
+    Challenge getChallenge(Challenge challenge);
+    List<Challenge> getAllChallenges(User user);
     void updateChallengeStatus(Challenge challenge, Status status);
 }

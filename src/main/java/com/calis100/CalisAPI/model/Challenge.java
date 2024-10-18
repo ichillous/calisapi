@@ -24,15 +24,15 @@ public class Challenge {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Column(name = "start_date", nullable = false)
-    private Date startDate;
-
-    @Column(name = "current_day")
-    private int currentDay;
-
     @Column(name = "created_at")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt = new Date();
+
+    @Column(name = "start_date", nullable = false)
+    private Date startDate = createdAt;
+
+    @Column(name = "current_day")
+    private int currentDay;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")

@@ -4,7 +4,9 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 
@@ -23,8 +25,8 @@ public class Log {
     @JoinColumn(name = "challenge_id", nullable = false)
     private Challenge challenge;
 
-    @Column(name = "log_date", nullable = false)
-    private Date logDate;
+    @Column(name = "log_day", nullable = false)
+    private int logDay;
 
     @Column(name = "pushups")
     private int pushups;
@@ -47,4 +49,10 @@ public class Log {
     @Column(name = "date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date date = new Date();
+
+    @Column(name = "update_date")
+    @UpdateTimestamp
+    private Instant lastUpdatedOn;
+
+
 }

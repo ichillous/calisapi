@@ -1,14 +1,8 @@
 package com.calis100.CalisAPI.controller;
 
-import com.calis100.CalisAPI.model.Challenge;
-import com.calis100.CalisAPI.model.Log;
-import com.calis100.CalisAPI.model.User;
-import com.calis100.CalisAPI.model.enums.Status;
-import com.calis100.CalisAPI.service.ChallengeService;
-import com.calis100.CalisAPI.service.LogService;
+
 import com.calis100.CalisAPI.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,7 +23,7 @@ public class DashboardController {
         return "dashboard";
     }
 
-    /* TODO: Display */
+    /* TODO: tba */
 
     @GetMapping("/greeting")
     public String greet(@RequestParam("username") String username, Model model) {

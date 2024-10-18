@@ -13,6 +13,6 @@ public interface ChallengeRepository extends JpaRepository<Challenge, Long> {
     List<Challenge> findByUser(User user);
     Challenge findChallengeByChallengeId(Challenge challenge);
 
-    Challenge findByUserAndStatus(User user, Status status);
+    Challenge findByStatus(Status status);
 
 }

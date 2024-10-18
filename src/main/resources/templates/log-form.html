@@ -9,7 +9,7 @@
 <body>
 <div class="container mt-5">
     <h1>Add Today's Log</h1>
-    <form th:action="@{/logs/submit}" th:object="${log}" method="post">
+    <form method="post" role="form" th:action="@{/log/save}" th:object="${log}">
         <div class="mb-3">
             <label for="pushups" class="form-label">Pushups</label>
             <input type="number" class="form-control" id="pushups" th:field="*{pushups}" required>

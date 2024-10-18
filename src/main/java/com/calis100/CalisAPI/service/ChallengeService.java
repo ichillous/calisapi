@@ -6,5 +6,5 @@ import com.calis100.CalisAPI.model.User;
 public interface ChallengeService {
     void saveChallenge(Challenge challenge);
     void updateChallengeProgress(Challenge challenge);
-    Challenge getActiveChallenge(User user);
+    Challenge getActiveChallenge();
 }

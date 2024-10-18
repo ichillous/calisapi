@@ -14,7 +14,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.List;
+
 
 @Controller
 public class UserController {
@@ -25,18 +25,6 @@ public class UserController {
         this.userService = userService;
     }
 
-    // Display all users (Admin functionality)
-    @GetMapping("/all")
-    public String getAllUsers(Model model, Authentication authentication) {
-        String username = authentication.getName();
-        User currentUser = userService.findByUsername(username);
-        if (!currentUser.getRole().equals(Role.ADMIN)) {
-            return "redirect:/access-denied";
-        }
-        List<User> users = userService.findAll();
-        model.addAttribute("users", users);
-        return "all-users"; // Returns the all-users.html template
-    }
 
     // Display the user's profile
     @GetMapping("/profile")

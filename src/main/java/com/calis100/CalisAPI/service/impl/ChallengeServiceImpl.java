@@ -1,14 +1,11 @@
 package com.calis100.CalisAPI.service.impl;
 
 import com.calis100.CalisAPI.model.Challenge;
-import com.calis100.CalisAPI.model.User;
 import com.calis100.CalisAPI.model.enums.Status;
 import com.calis100.CalisAPI.repository.ChallengeRepository;
 import com.calis100.CalisAPI.service.ChallengeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class ChallengeServiceImpl implements ChallengeService {
@@ -26,8 +23,8 @@ public class ChallengeServiceImpl implements ChallengeService {
     */
 
     @Override
-    public Challenge getActiveChallenge(User user) {
-        return challengeRepository.findByUserAndStatus(user, Status.Active);
+    public Challenge getActiveChallenge() {
+        return challengeRepository.findByStatus(Status.Active);
     }
 
     @Override

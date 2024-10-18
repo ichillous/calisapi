@@ -1,6 +1,7 @@
 package com.calis100.CalisAPI.controller;
 
 
+import com.calis100.CalisAPI.model.Challenge;
 import com.calis100.CalisAPI.model.User;
 import com.calis100.CalisAPI.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,7 @@ public class AuthController {
 
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
-
+        // TODO CREATE CHALLENGE WHEN USER CREATES ACCOUNT
     @Autowired
     public AuthController(UserService userService, PasswordEncoder passwordEncoder) {
         this.userService = userService;
@@ -27,6 +28,7 @@ public class AuthController {
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
         model.addAttribute("user", new User());
+        model.addAttribute("challenge", new Challenge());
         return "register";
     }
 

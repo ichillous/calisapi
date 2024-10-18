@@ -6,4 +6,3 @@ import lombok.ToString;
 public enum Status {
     None, Active, Completed, Failed;
 }
-

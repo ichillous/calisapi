@@ -1,16 +1,14 @@
 package com.calis100.CalisAPI.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.hibernate.annotations.UpdateTimestamp;
+import lombok.*;
 
-import java.time.Instant;
+
+import java.time.LocalDateTime;
 import java.util.Date;
-import java.util.List;
 
-@Data
+@Getter
+@Setter
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -25,8 +23,15 @@ public class Log {
     @JoinColumn(name = "challenge_id", nullable = false)
     private Challenge challenge;
 
-    @Column(name = "log_day", nullable = false)
-    private int logDay;
+    @Column(name = "created_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime createdAt = LocalDateTime.now();
+
+    @Column(name = "updated_at")
+    private LocalDateTime updateAt = LocalDateTime.now();
+
+    @Column(name = "last_update")
+    private LocalDateTime lastUpdate = updateAt;
 
     @Column(name = "pushups")
     private int pushups;
@@ -45,14 +50,5 @@ public class Log {
 
     @Column(name = "run_miles")
     private int runMiles;
-
-    @Column(name = "date")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date date = new Date();
-
-    @Column(name = "update_date")
-    @UpdateTimestamp
-    private Instant lastUpdatedOn;
-
 
 }

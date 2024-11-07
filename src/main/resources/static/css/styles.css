@@ -1,7 +1,116 @@
-body {
-    padding-top: 1px; /* Adjust based on your navbar height */
+/* Dark Theme - Primary Colors */
+:root {
+    --background-color: #1a1b41;
+    --sidebar-color: #0e0f28;
+    --card-color: #2a2b5e;
+    --text-color: #e4e4e7;
+    --accent-color: #8241f5;
+    --button-color: #3b3d62;
 }
 
-.navbar-brand img {
-    margin-right: 10px;
+/* Global Dark Theme Styles */
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+/* Sidebar styling for dark mode */
+.sidebar {
+    background-color: var(--sidebar-color);
+    color: var(--text-color);
+    width: 250px;
+    height: 100vh;
+    padding-top: 20px;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+.sidebar h3 {
+    color: var(--text-color);
+}
+
+.sidebar .nav-link {
+    color: #c4c4d4;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: color 0.3s;
+}
+
+.sidebar .nav-link:hover,
+.sidebar .nav-link.active {
+    color: var(--accent-color);
+}
+
+.sidebar .nav-link i {
+    font-size: 1.2rem;
+}
+
+/* Main content styling */
+.main-content {
+    margin-left: 250px;
+    padding: 20px;
+}
+
+/* Card and button styling for dark mode */
+.card {
+    background-color: var(--card-color);
+    border: none;
+}
+
+.card-body {
+    color: var(--text-color);
+}
+
+.btn-primary {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+    color: #ffffff;
+}
+
+.btn-outline-primary {
+    color: var(--accent-color);
+    border-color: var(--accent-color);
+}
+
+/* Dark theme for table */
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Dark mode for modals */
+.modal-content {
+    background-color: var(--card-color);
+    color: var(--text-color);
+}
+
+.modal-header,
+.modal-footer {
+    border-color: #495057;
+}
+
+.btn-close {
+    background-color: #f8f9fa;
+}
+
+/* Footer Styling */
+footer.bg-dark {
+    background-color: var(--sidebar-color);
+    color: var(--text-color);
+}
+
+/* Search and other header elements */
+.header-search {
+    background-color: var(--button-color);
+    color: var(--text-color);
+    padding: 8px;
+    border-radius: 5px;
+    width: 100%;
+}
+
+.header-icons {
+    color: var(--accent-color);
+    font-size: 1.5rem;
+    margin-left: 10px;
 }

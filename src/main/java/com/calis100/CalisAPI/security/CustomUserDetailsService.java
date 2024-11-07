@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 
 @Service
 public class CustomUserDetailsService  implements UserDetailsService {
@@ -22,7 +23,7 @@ public class CustomUserDetailsService  implements UserDetailsService {
         // Load user from the database using email
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-
+        user.setLastLogin(new Date());
         return new org.springframework.security.core.userdetails.User(
                 user.getEmail(),
                 user.getPassword(),
@@ -31,6 +32,7 @@ public class CustomUserDetailsService  implements UserDetailsService {
     }
 
     private Collection<? extends GrantedAuthority> getAuthorities(User user) {
+        user.setLastLogin(new Date());
         return Collections.singleton(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()));
     }
 }

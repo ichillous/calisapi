@@ -2,14 +2,15 @@ package com.calis100.CalisAPI.model;
 
 import com.calis100.CalisAPI.model.enums.Status;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -26,13 +27,16 @@ public class Challenge {
 
     @Column(name = "created_at")
     @Temporal(TemporalType.TIMESTAMP)
-    private Date createdAt = new Date();
+    private LocalDateTime createdAt = LocalDateTime.now();
 
-    @Column(name = "start_date", nullable = false)
-    private Date startDate = createdAt;
+    @Column(name = "updated_at")
+    private LocalDateTime updateAt = LocalDateTime.now();
 
-    @Column(name = "current_day")
-    private int currentDay;
+    @Column(name = "last_update")
+    private LocalDateTime lastUpdate = updateAt;
+
+    @Column(name = "day_count")
+    private int dayCount;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
@@ -40,4 +44,5 @@ public class Challenge {
 
     @OneToMany(mappedBy = "challenge", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Log> logs = new HashSet<>();
+
 }

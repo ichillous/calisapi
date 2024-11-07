@@ -7,9 +7,13 @@ import com.calis100.CalisAPI.model.User;
 import java.util.List;
 
 public interface LogService {
-    void saveLog(Log log);
-    List<Log> getLogsByUser(User user);
-    Log getLogByUserId(Long userId);
-    Log getOrCreateLogForToday(Challenge challenge);
-    void saveOrUpdateLog(Log log);
+    // Basic CRUD operations
+    List<Log> findAllByChallenge(Challenge challenge);
+    Log create(Log log);
+    void updateLog(Long logId);
+    void deleteById(Long id);
+    List<Log> findByUser(Challenge challenge, List<Log> logs, User user);
+    Log findById(Long id);
 }
+
+
